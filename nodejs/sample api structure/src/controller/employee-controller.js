@@ -13,10 +13,12 @@ const getEmployees = async (req, res) => {
         //     return recordset;
             
         //});
+        console.log( req.Header.Get("X-Real-Ip")        );
+
         const users = "taqi";
         res.send(users).status(200);
     }catch( error ){
-        response.status(404).json({ message: error.message })
+        res.status(404).json({ message: error.message })
     }
 }
 
@@ -31,6 +33,7 @@ const addEmployee = async (req, res) => {
         //     return recordset;
             
         //});
+        console.log(req.RemoteAddr);
         const users = "taqi post";
         res.send(users).status(200);
     }catch( error ){
