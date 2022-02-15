@@ -2,7 +2,7 @@ var sql = require("mssql");
 var request = new sql.Request();
 
 
-module.exports =  getEmployees = async (req, res) => {
+const getEmployees = async (req, res) => {
     try{
         // const employees = await  request.query('select * from employee', function (err, recordset) {
             
@@ -20,7 +20,7 @@ module.exports =  getEmployees = async (req, res) => {
     }
 }
 
-module.exports =  addEmployee = async (req, res) => {
+const addEmployee = async (req, res) => {
     try{
         // const employees = await  request.query('select * from employee', function (err, recordset) {
             
@@ -37,3 +37,7 @@ module.exports =  addEmployee = async (req, res) => {
         response.status(404).json({ message: error.message })
     }
 }
+module.exports = {
+    getEmployees:getEmployees,
+    addEmployee:addEmployee
+};

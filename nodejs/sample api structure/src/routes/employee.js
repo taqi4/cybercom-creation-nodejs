@@ -1,10 +1,12 @@
 
 var express = require("express");
-const  getEmployees = require( "../controller/employee-controller");
+const  {getEmployees,addEmployee} = require( "../controller/employee-controller");
 
-const router = express.Router();
+module.exports= router =  express.Router();
 
 router.get('/', getEmployees);
-//router.post('/', addEmployee);
+router.post('/', addEmployee);
+console.log(router);
+console.log(module.exports);
 
-module.exports = router;
+//module.exports=  router;
