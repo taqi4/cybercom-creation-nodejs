@@ -1,5 +1,5 @@
 {
-  "name": "viewapp",
+  "name": "ejsdemo",
   "version": "0.0.0",
   "private": true,
   "scripts": {
@@ -9,11 +9,10 @@
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
     "dotenv": "^16.0.0",
+    "ejs": "~2.6.1",
     "express": "~4.16.1",
-    "hbs": "~4.0.4",
     "http-errors": "~1.6.3",
     "morgan": "~1.9.1",
-    "nodemailer": "^6.7.2",
-    "nodemailer-express-handlebars": "^4.0.0"
+    "nodemailer": "^6.7.2"
   }
 }
