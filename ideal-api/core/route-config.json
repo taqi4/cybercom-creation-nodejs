@@ -1,0 +1,26 @@
+[
+    {
+        "method": "get",
+        "path": "/",
+        "controller": "home.index",
+        "middlewares": [
+            "auth.validate"
+        ]
+    },
+    {
+        "method": "get",
+        "path": "/products",
+        "controller": "product.index",
+        "middlewares": [
+            "auth.kick","auth.validate"
+        ]
+    },
+    {
+        "method": "post",
+        "path": "/products",
+        "controller": "product.add",
+        "middlewares": [
+            "auth.validate"
+        ]
+    }    
+]
