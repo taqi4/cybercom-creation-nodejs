@@ -44,9 +44,9 @@ router.get('/',  async (req, res, next)=> {
     to: 'ztaqi668@gmail.com',
     cc:'hkjigar3@gmail.com',
     subject: 'Account Activated',
-    // attachments :[
-    //   {filename : "picture.jpeg" , path:"./picture.jpeg"}
-    // ],
+    attachments :[
+      {filename : "picture.jpeg" , path:"./picture.jpeg"}
+    ],
     html: data
   };
   
