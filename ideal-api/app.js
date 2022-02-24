@@ -1,13 +1,22 @@
+const services = require("./lib/serviceLoader");
+
 var createError = require('http-errors');
 var express = require('express');
+var app = express();
+
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+var colors = require("colors");
+var fs = require("fs");
+// let files = fs.readdirSync("./services")
+// .forEach((file)=>
+//      {
+//        services = {...services,...require(`./services/${file}`)}
+//       });
 
-var indexRouter = require('./routes/route');
 
-var app = express();
-
+console.log(colors.red(process.env.CHECK));
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
@@ -17,6 +26,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+var indexRouter = require('./core/route');
 
 app.use('/', indexRouter);
 
