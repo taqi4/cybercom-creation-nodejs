@@ -3,15 +3,16 @@ var products = [{
     name:"mobile",
     description:"smartphone"
 }];
+const Product = require("../models/product");
 module.exports.addProduct =async ({id,name,description} = product)=>{
         try{
-            let productExist = products.find((e)=>e.id==id);
-            if(!id || productExist){
-                throw Error("product should have  id and it should be unique");
-            }
-            name = name ?? " ";
-            description = description ?? " ";
-            products.push({id,name,description});
+            // let productExist = products.find((e)=>e.id==id);
+            // if(!id || productExist){
+            //     throw Error("product should have  id and it should be unique");
+            // }
+            Product.create({id,name,description})
+            .then(result => console.log(result))
+            .catch(e=> {throw Error(e.message)});
             return true;
         }catch(e){
             console.log(e.message);

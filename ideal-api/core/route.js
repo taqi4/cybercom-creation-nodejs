@@ -6,50 +6,49 @@ var routes = require("../routes/route-config.json") ?? [];
 var fs = require("fs");
 var colors = require("colors");
 const { validate } = require('../middlewares/auth');
-var importedFiles = {};
 routes.forEach(route =>{
 
         try{
             validation(route);
-            let [controllerFile,controllerFunction] = route.controller.split(".");
-            importFile(controllerFile,controllerFunction,"controllers");
+            //let [controllerFile,controllerFunction] = route.controller.split(".");
+            //importFile(controllerFile,controllerFunction,"controllers");
 
             const middlewares = route.middlewares.map(e=> {
-                let [middlewareFile,middlewareFunction] = e.split(".");
+                //let [middlewareFile,middlewareFunction] = e.split(".");
 
-                importFile(middlewareFile,middlewareFunction ,"middlewares");
-                return eval(`importedFiles.${e}`);
+                //importFile(middlewareFile,middlewareFunction ,"middlewares");
+                return eval(`framework.middlewares.${e}`);
             });
             
-            router[route.method](route.path,middlewares,eval(`importedFiles.${route.controller}`));
+            router[route.method](route.path,middlewares,eval(`framework.controllers.${route.controller}`));
         }catch(e){
             console.log(colors.red(e.message,"error in \n",route));
         }
 });
 
 
-function importFile(fileName,functionName,source){
-    if(Object.keys(importedFiles).includes(fileName)){
-        console.log("no need to import ",fileName);
-        return true;
-    }
-    if(!fs.existsSync(`../ideal-api/${source}`)){
-        throw Error(`directory not available ../ideal-api/${source}` )
-    }
-    let files = fs.readdirSync(`../ideal-api/${source}`);
+// function importFile(fileName,functionName,source){
+//     if(Object.keys(importedFiles).includes(fileName)){
+//         console.log("no need to import ",fileName);
+//         return true;
+//     }
+//     if(!fs.existsSync(`../ideal-api/${source}`)){
+//         throw Error(`directory not available ../ideal-api/${source}` )
+//     }
+//     let files = fs.readdirSync(`../ideal-api/${source}`);
     
-    if(!files.includes(fileName+".js")){
-        throw Error(`${fileName} does'nt exist in ${source} folder`);
-    }
+//     if(!files.includes(fileName+".js")){
+//         throw Error(`${fileName} does'nt exist in ${source} folder`);
+//     }
 
-    importedFiles[fileName] = require(`../${source}/${fileName}`);
-    console.log(colors.blue(`imported ${fileName} from ../${source}/${fileName}`));
+//     importedFiles[fileName] = require(`../${source}/${fileName}`);
+//     console.log(colors.blue(`imported ${fileName} from ../${source}/${fileName}`));
 
-    if(!importedFiles[fileName][functionName]){
-        throw Error(`no function named ${functionName} in ${fileName}`);
-    }
-    return true;
-}
+//     if(!importedFiles[fileName][functionName]){
+//         throw Error(`no function named ${functionName} in ${fileName}`);
+//     }
+//     return true;
+// }
 
 
 function validation({method,path,controller,middlewares}= route){
