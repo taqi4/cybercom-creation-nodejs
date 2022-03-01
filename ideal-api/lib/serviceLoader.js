@@ -10,9 +10,7 @@ var fs =require("fs");
 // module.exports.services = services;
 
 var functions = {};
-var controllers={};
 var services={};
-var middlewares={};
 var importFunction = (object,path)=>{
     fs.readdirSync(path)
     .forEach((file)=>{
@@ -29,8 +27,13 @@ var importFunction = (object,path)=>{
         }
     })
 }
+fs.readdirSync("../ideal-api/modules")
+.forEach(moduleName =>{
+    functions[moduleName] = {};
+    services[moduleName]={};
+    importFunction(functions[moduleName],`../ideal-api/modules/${moduleName}/functions`);
+    importFunction(services[moduleName],`../ideal-api/modules/${moduleName}/services`);
+});
 importFunction(functions,"../ideal-api/functions");
-importFunction(controllers,"../ideal-api/controllers");
 importFunction(services,"../ideal-api/services");
-importFunction(middlewares,"../ideal-api/middlewares");
-module.exports = {functions,services,controllers,middlewares};
+module.exports = {functions,services};

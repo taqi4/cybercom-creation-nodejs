@@ -1,7 +1,6 @@
 
 global.framework ={};
-framework = require("./lib/serviceLoader");
-console.log(framework);
+global.framework = require("./lib/serviceLoader");
 var createError = require('http-errors');
 var express = require('express');
 var app = express();
@@ -33,7 +32,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 var indexRouter = require('./core/route');
 
-app.use('/', indexRouter);
+app.use( indexRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

@@ -38,5 +38,10 @@
         "middlewares": [
             "auth.kick","auth.validate"
         ]       
+    },{
+        "method":"delete",
+        "path":"/products/:id",
+        "controller":"product.deleteProduct",
+        "middlewares":["auth.validate"]
     }   
 ]

@@ -1,0 +1,18 @@
+[
+    {
+        "method": "get",
+        "path": "/module1",
+        "controller": "module1Home.module1Home",
+        "middlewares": [
+            "auth1.validate1"
+        ]
+    },
+    {
+        "method": "get",
+        "path": "/module1/products",
+        "controller": "module1Home.module1Index",
+        "middlewares": [
+            "auth1.validate1"
+        ]
+    }  
+]

@@ -1,0 +1,18 @@
+[
+    {
+        "method": "get",
+        "path": "/module2",
+        "controller": "module2Home.module2Home",
+        "middlewares": [
+            "auth2.validate2"
+        ]
+    },
+    {
+        "method": "get",
+        "path": "/module2/products",
+        "controller": "module2Home.module2Index",
+        "middlewares": [
+            "auth2.validate2"
+        ]
+    }  
+]

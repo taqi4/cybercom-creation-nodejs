@@ -1,8 +1,4 @@
-var products = [{
-    id:1,
-    name:"mobile",
-    description:"smartphone"
-}];
+
 const Product = require("../models/product");
 module.exports.addProduct =async ({id,name,description} = product)=>{
         try{
@@ -20,14 +16,19 @@ module.exports.addProduct =async ({id,name,description} = product)=>{
         }
 }
 module.exports.getAllProducts = async ()=>{
-    return products;
+    return await(Product.findAll());
 }
 module.exports.getProductById = async (id)=>{
     try{
-        let productExist = products.find(e => e.id==id);
-        if(!productExist){
-            throw Error(`no product of id :${id}`);
-        }
+        let productExist = await Product.findAll({where:{id:id}})
+        return productExist;
+    }catch(e){
+        console.log(e);
+    }
+}
+module.exports.deleteProductById = async (id)=>{
+    try{
+        let productExist = await Product.destroy({where:{id:id}})
         return productExist;
     }catch(e){
         console.log(e);
@@ -35,16 +36,7 @@ module.exports.getProductById = async (id)=>{
 }
 module.exports.updateProduct = async (id,update)=>{
     try{
-        var i = 0;
-        let productExist = products.find((e,index) => {
-            i = index;
-            return e.id==id;
-        });
-
-        if(!productExist){
-            throw Error(`no product of id :${id}`);
-        }
-        products[i]={...productExist,...update};
+        const result = await Product.update(update,{where:{id}});
         return true;
     }catch(e){
         return false;
