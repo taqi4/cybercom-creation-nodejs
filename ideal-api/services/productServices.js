@@ -1,12 +1,18 @@
 
-const Product = require("../models/product");
+const Product = require("../db/models/product");
+var db = require("../db/models/index")
+console.log("----------------------------------");
+console.log(framework);
+var User = db.User;
+
 module.exports.addProduct =async ({id,name,description} = product)=>{
         try{
             // let productExist = products.find((e)=>e.id==id);
             // if(!id || productExist){
             //     throw Error("product should have  id and it should be unique");
             // }
-            Product.create({id,name,description})
+            User.create({name,name,name}).then(e=>console.log(e)).catch(e=>console.log(e));
+           Product.create({id,name,description})
             .then(result => console.log(result))
             .catch(e=> {throw Error(e.message)});
             return true;

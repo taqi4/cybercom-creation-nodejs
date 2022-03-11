@@ -5,7 +5,7 @@
         "controller": "home.index",
         "middlewares": [
             "auth.validate"
-        ]
+        ],"roles":["admin"]
     },
     {
         "method": "get",
@@ -13,7 +13,7 @@
         "controller": "product.index",
         "middlewares": [
             "auth.kick","auth.validate"
-        ]
+        ],"roles":[]
     },
     {
         "method": "post",
@@ -21,7 +21,7 @@
         "controller": "product.add",
         "middlewares": [
             "auth.validate"
-        ]
+        ],"roles":[]
     } ,
     {
         "method":"put",
@@ -29,7 +29,7 @@
         "controller":"product.update",
         "middlewares": [
             "auth.validate"
-        ]
+        ],"roles":[]
     },
     {
         "method": "get",
@@ -37,11 +37,30 @@
         "controller": "product.getProduct",
         "middlewares": [
             "auth.kick","auth.validate"
-        ]       
+        ],"roles":[]       
     },{
         "method":"delete",
         "path":"/products/:id",
         "controller":"product.deleteProduct",
-        "middlewares":["auth.validate"]
-    }   
+        "middlewares":["auth.validate"],
+        "roles":[]
+    }  ,{
+        "method":"post",
+        "path":"/register",
+        "controller":"user.register",
+        "middlewares":["auth.validate"],
+        "roles":[]
+    },{
+        "method":"post",
+        "path":"/login",
+        "controller":"user.login",
+        "middlewares":["auth.validate"],
+        "roles":[]
+    },{
+        "method":"post",
+        "path":"/refresh-token",
+        "controller":"user.refreshToken",
+        "middlewares":["auth.validate"],
+        "roles":[]
+    }
 ]

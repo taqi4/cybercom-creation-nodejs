@@ -5,7 +5,8 @@
         "controller": "module1Home.module1Home",
         "middlewares": [
             "auth1.validate1"
-        ]
+        ],
+        "gloabal":false
     },
     {
         "method": "get",
@@ -13,6 +14,7 @@
         "controller": "module1Home.module1Index",
         "middlewares": [
             "auth1.validate1"
-        ]
+        ],
+        "global":true
     }  
 ]

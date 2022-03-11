@@ -1,13 +1,11 @@
 
-const { warn } = require('console');
 var express = require('express');
 var router = new express.Router();
 var routes = require("../routes/route.json") ?? [];
 var importedFiles ={};
 var fs = require("fs");
 var colors = require("colors");
-const { validate } = require('../middlewares/auth');
-const { hello } = require('../modules/module1/functions/main1');
+var authenticate = require("./middlewares").authenticate;
 
 fs.readdirSync("../ideal-api/modules")
 .forEach(moduler=>{
@@ -25,7 +23,7 @@ fs.readdirSync("../ideal-api/modules")
                 //importFile(middlewareFile,middlewareFunction ,`modules/${moduler}/middlewares`,moduler);
                 return require(`../modules/${moduler}/middlewares/${middlewareFile}`)[middlewareFunction];
             });
-            router[subRoute.method](subRoute.path,middlewares,require(`../modules/${moduler}/controllers/${controllerFile}`)[controllerFunction]);
+            router[subRoute.method](subRoutes.global?`${subRoute.path}`:`/${moduler}+${subRoute.path}`, [authenticate(subRoute.roles),...middlewares],require(`../modules/${moduler}/controllers/${controllerFile}`)[controllerFunction]);
 
 
         }catch(e){
@@ -40,15 +38,14 @@ routes.forEach(route =>{
             validation(route);
             let [controllerFile,controllerFunction] = route.controller.split(".");
             importFile(controllerFile,controllerFunction,"controllers"," ");
-
+        
             const middlewares = route.middlewares.map(e=> {
                 let [middlewareFile,middlewareFunction] = e.split(".");
 
                 importFile(middlewareFile,middlewareFunction ,"middlewares", " ");
                 return importedFiles[middlewareFile][middlewareFunction];
             });
-            
-            router[route.method](route.path,middlewares,eval(`importedFiles.${route.controller}`));
+            router[route.method](route.path, [authenticate(route.roles),...middlewares],eval(`importedFiles.${route.controller}`));
         }catch(e){
             console.log(colors.red(e.message,"error in \n",route));
         }

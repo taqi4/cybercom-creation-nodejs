@@ -1,6 +1,9 @@
 'use strict';
+
+const { SequelizeStorage } = require("umzug");
+
 module.exports = {
-  async up(queryInterface, Sequelize) {
+  async up({context : queryInterface}) {
     await queryInterface.createTable('Users', {
       id: {
         allowNull: false,
@@ -8,14 +11,16 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      firstName: {
+      
+      userName: {
         type: Sequelize.STRING
+        
       },
-      lastName: {
-        type: Sequelize.STRING
+      password:{
+        type:Sequelize.STRING
       },
-      email: {
-        type: Sequelize.STRING
+      role:{
+        type:Sequelize.STRING
       },
       createdAt: {
         allowNull: false,
@@ -27,7 +32,7 @@ module.exports = {
       }
     });
   },
-  async down(queryInterface, Sequelize) {
+  async down({context : queryInterface}) {
     await queryInterface.dropTable('Users');
   }
 };
