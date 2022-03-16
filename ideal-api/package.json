@@ -9,6 +9,7 @@
     "body-parser": "^1.19.2",
     "colors": "^1.4.0",
     "cookie-parser": "~1.4.4",
+    "dayjs": "^1.10.8",
     "debug": "~2.6.9",
     "ejs": "~2.6.1",
     "express": "~4.16.1",
@@ -20,7 +21,8 @@
     "readline-sync": "^1.4.10",
     "sequelize": "^6.16.2",
     "tcp-port-used": "^1.0.2",
-    "umzug": "^3.0.0"
+    "umzug": "^3.0.0",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "nodemon": "^2.0.15",

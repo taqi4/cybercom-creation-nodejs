@@ -5,25 +5,32 @@ var routes = require("../routes/route.json") ?? [];
 var importedFiles ={};
 var fs = require("fs");
 var colors = require("colors");
-var authenticate = require("./middlewares").authenticate;
+var authenticate = require("./middlewares/middlewares1").authenticate;
+var dups = [];
 
-fs.readdirSync("../ideal-api/modules")
+fs.readdirSync("../ideal-api/api")
 .forEach(moduler=>{
-    let subRoutes = require(`../modules/${moduler}/route.json`);
+    let subRoutes = require(`../api/${moduler}/route.json`);
     
     
     subRoutes.forEach(subRoute => {
     
         try{
-           // validate(subRoute);
+            validation(subRoute);
             let [controllerFile,controllerFunction] = subRoute.controller.split(".");
-           // importFile(controllerFile,controllerFunction,`modules/${moduler}/controllers`,moduler);
+           // importFile(controllerFile,controllerFunction,`api/${moduler}/controllers`,moduler);
             let middlewares = subRoute.middlewares.map(e=> {
                 let [middlewareFile,middlewareFunction] = e.split(".");
-                //importFile(middlewareFile,middlewareFunction ,`modules/${moduler}/middlewares`,moduler);
-                return require(`../modules/${moduler}/middlewares/${middlewareFile}`)[middlewareFunction];
+                //importFile(middlewareFile,middlewareFunction ,`api/${moduler}/middlewares`,moduler);
+                return require(`../api/${moduler}/middlewares/${middlewareFile}`)[middlewareFunction];
             });
-            router[subRoute.method](subRoutes.global?`${subRoute.path}`:`/${moduler}+${subRoute.path}`, [authenticate(subRoute.roles),...middlewares],require(`../modules/${moduler}/controllers/${controllerFile}`)[controllerFunction]);
+            let path =subRoutes.global?`${subRoute.path}`:`/${moduler}+${subRoute.path}`; 
+            duplicate(path,subRoute.method);
+            router[subRoute.method]
+            (path,
+             [core.middlewares.middlewares1.authenticate(subRoute.roles),...middlewares],
+             require(`../api/${moduler}/controllers/${controllerFile}`)[controllerFunction]
+             );
 
 
         }catch(e){
@@ -45,11 +52,24 @@ routes.forEach(route =>{
                 importFile(middlewareFile,middlewareFunction ,"middlewares", " ");
                 return importedFiles[middlewareFile][middlewareFunction];
             });
-            router[route.method](route.path, [authenticate(route.roles),...middlewares],eval(`importedFiles.${route.controller}`));
+            duplicate(route.path,route.method);
+            router[route.method]
+            (route.path, 
+                [core.middlewares.middlewares1.authenticate(route.roles),...middlewares]
+                ,eval(`importedFiles.${route.controller}`)
+                );
         }catch(e){
             console.log(colors.red(e.message,"error in \n",route));
         }
 });
+function duplicate(path,method){
+    if(dups.some(object => object.path==path&&object.method==method )){
+        console.log(colors.yellow(`route ${method}: ${path} already in use `));
+        throw Error(`route ${method}: ${path} already in use `);
+    }else{
+        dups.push({method,path});
+    }
+}
 
 function importFile(fileName,functionName,source,moduler){
     if(Object.keys(importedFiles).includes(fileName)){
@@ -94,6 +114,12 @@ function validation({method,path,controller,middlewares}= route){
     }
 }
 module.exports = router;
+
+
+
+
+
+
 // function findFile(startPath , fileName){
 //     console.log("-------------------------------");
 //     let files = fs.readdirSync(startPath);

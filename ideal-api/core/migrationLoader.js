@@ -2,9 +2,9 @@ var {Umzug,SequelizeStorage} = require("umzug");
 var fs =require("fs");
 const path = require("path");
 var paths = "";
-fs.readdirSync("../ideal-api/modules")
+fs.readdirSync("../ideal-api/api")
 .forEach(e=>{
-    paths+=`./modules/${e}/migrations/*.js,`;
+    paths+=`./api/${e}/migrations/*.js,`;
 });
 const umzug = new Umzug({
     migrations: { glob: `{${paths}./db/migrations/*.js}` },
@@ -18,7 +18,8 @@ const umzug = new Umzug({
     // Checks migrations and run them if they are not already applied. To keep
     // track of the executed migrations, a table (and sequelize model) called SequelizeMeta
     // will be automatically created (if it doesn't exist already) and parsed.
-     let pending = await umzug.pending();
+     
+    let pending = await umzug.pending();
     
     if(pending.length>0){
       console.log("pending migrations are");

@@ -32,8 +32,8 @@ Object.keys(db).forEach(modelName => {
   }
 });
 
-fs.readdirSync("../ideal-api/modules").forEach(moduleName =>{
-  fs.readdirSync(`../ideal-api/modules/${moduleName}`)
+fs.readdirSync("../ideal-api/api").forEach(moduleName =>{
+  fs.readdirSync(`../ideal-api/api/${moduleName}`)
   .filter(file => {
     return (file.indexOf('.') !== 0) && (file !== basename) && (file.slice(-3) === '.js');
   })
@@ -49,7 +49,9 @@ Object.keys(db).forEach(modelName => {
 });
 });
 
+
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
+global.db = db;
 
 module.exports= db;

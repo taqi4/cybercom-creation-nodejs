@@ -1,7 +1,7 @@
 
 global.framework ={};
 global.framework = require("./core/serviceLoader");
-framework.db = require("./db/models/index");
+ require("./db/models/index");
 global.jwt = {};
 jwt = require("jsonwebtoken");
 
@@ -22,36 +22,6 @@ global.readline = require('readline').createInterface({
   input: process.stdin,
   output: process.stdout
 })
-
-require("./db/models/product")
-// let files = fs.readdirSync("./services")
-// .forEach((file)=>
-//      {
-//        services = {...services,...require(`./services/${file}`)}
-//       });
-
-
-// exec('npx sequelize db:migrate:status',(err,data)=>{
-//   console.log(data)
-//   console.log("do u want to migrate all files?")
-//   readline.question(`yes/no ?`, name => {
-//       if(name=="yes"){
-//           exec("npx sequelize-cli db:migrate", (error, stdout, stderr) => {
-//               if (error) {
-//                   console.log(`error: ${error.message}`);
-//                   return;
-//               }
-//               if (stderr) {
-//                   console.log(`stderr: ${stderr}`);
-//                   return;
-//               }
-//               console.log(`stdout: ${stdout}`);
-//             });
-//       }else{
-//           console.log("continue development")
-//       }
-//   })
-// });
 require("./core/migrationLoader");
 
 console.log(colors.red(process.env.CHECK));

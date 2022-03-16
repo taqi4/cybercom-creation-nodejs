@@ -58,9 +58,10 @@
         "roles":[]
     },{
         "method":"post",
-        "path":"/refresh-token",
+        "path":"/refresh-token/:user_key",
         "controller":"user.refreshToken",
         "middlewares":["auth.validate"],
         "roles":[]
     }
+    
 ]
