@@ -1,0 +1,31 @@
+// const path = require('path');
+// const inquirer = require('inquirer');
+// const fs = require('fs');
+// var modulePath ="";
+// var files = fs.readdirSync("../ideal-api/api");
+//   inquirer
+//   .prompt([
+//     "root",...files
+//   ]).then((answers)=>{
+//   if(answers == "root"){
+//     modulePath = "db/";
+//     console.log("..............", answers);
+//     module.exports = {
+//         'config': path.resolve("db/", 'config','config.json'),
+//         'models-path': path.resolve(modulePath, 'models'),
+//         'migrations-path': path.resolve(modulePath, 'migrations'),
+//           'seeders-path':    path.resolve(modulePath, 'seeders')
+//       }
+// }else{
+//     console.log("........");
+//     modulePath = `api/${answers}`;
+//     module.exports = {
+//         'config': path.resolve("db/", 'config','config.json'),
+//         'models-path': path.resolve(modulePath, 'models'),
+//         'migrations-path': path.resolve(modulePath, 'migrations'),
+//           'seeders-path':    path.resolve(modulePath, 'seeders')
+//       }
+// }
+//  } );
+
+

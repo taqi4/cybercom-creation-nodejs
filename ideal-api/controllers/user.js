@@ -27,18 +27,19 @@ module.exports.register =async (req,res)=>{
     }
 }
 module.exports.refreshToken = async(req,res)=>{
-    let user_key = req.params.user_key;
-    let valid_key = await User.findAll({where:{user_key : user_key}});
+    try{let user_key = req.params.user_key;
+    let valid_key = await User.findAll({where:{user_key : user_key,refresh_token:req.cookies["refresh-token"]}});
     if(valid_key.length>1){
     res.status(420).send("try login again");        
     }
-    valid_key.user_key = uuid.v4() ;
-    await User.update(valid_key,{where:{id:valid_key.id}});
     var decoded = await jwt.verify(req.cookies["refresh-token"],process.env.REFRESH_TOKEN_KEY);
     if(decoded){
-    var userExist = decoded.userServices;
-    var accessToken = await jwt.sign({userExist},process.env.ACCESS_TOKEN_KEY,{expiresIn : 3600});
-    var refreshToken = await jwt.sign({userExist}, process.env.REFRESH_TOKEN_KEY,{expiresIn:86400}) 
+        var userExist = decoded.userServices;
+        var accessToken = await jwt.sign({userExist},process.env.ACCESS_TOKEN_KEY,{expiresIn : 3600});
+        var refreshToken = await jwt.sign({userExist}, process.env.REFRESH_TOKEN_KEY,{expiresIn:86400}) 
+        valid_key.user_key = uuid.v4() ;
+        valid_key.refresh_token = refreshToken;
+        await User.update(valid_key,{where:{id:valid_key.id}});
     res.cookie("refresh-token",refreshToken,{
         secure: process.env.NODE_ENV !== "development",
         httpOnly: true,
@@ -48,5 +49,7 @@ module.exports.refreshToken = async(req,res)=>{
      return true;
     }
     res.status(403).send("please login first");
-    return false;
+    return false;}catch(e){
+        console.log(e.message);
+    }
 }

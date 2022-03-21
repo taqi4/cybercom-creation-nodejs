@@ -1,7 +1,7 @@
 
 global.framework ={};
+require("./db/models/index");
 global.framework = require("./core/serviceLoader");
- require("./db/models/index");
 global.jwt = {};
 jwt = require("jsonwebtoken");
 
@@ -17,6 +17,9 @@ global.colors = require("colors");
 var fs = require("fs");
 global.sequelize = require("./db/conn");
 global.Sequelize =  require("sequelize");
+const csrf = require('csurf');
+var csrfProtection = csrf({ cookie: true })
+
 
 global.readline = require('readline').createInterface({
   input: process.stdin,
@@ -32,11 +35,13 @@ app.set('view engine', 'ejs');
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
+app.use(cookieParser("secret"));
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use(csrfProtection);
 var indexRouter = require('./core/route');
 app.use( indexRouter);
+app.use(require("./core/coreRoutes"));
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

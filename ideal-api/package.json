@@ -3,20 +3,24 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "nodemon ./bin/www"
+    "start": "nodemon ./bin/www",
+    "add-auth": " node bin/commands/addAuth"
   },
   "dependencies": {
     "body-parser": "^1.19.2",
     "colors": "^1.4.0",
     "cookie-parser": "~1.4.4",
+    "csurf": "^1.11.0",
     "dayjs": "^1.10.8",
     "debug": "~2.6.9",
     "ejs": "~2.6.1",
     "express": "~4.16.1",
     "http-errors": "~1.6.3",
+    "inquirer": "^8.2.1",
     "jsonwebtoken": "^8.5.1",
     "morgan": "~1.9.1",
     "mysql2": "^2.3.3",
+    "prompt-radio": "^1.2.1",
     "readline": "^1.3.0",
     "readline-sync": "^1.4.10",
     "sequelize": "^6.16.2",
