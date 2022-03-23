@@ -20,7 +20,7 @@ if (config.use_env_variable) {
 var queryInterface = sequelize.getQueryInterface()
 
 if(ans == 'y'|| ans=='Y'){
-    console.log("do you want to use existing database ? y/n?");
+    console.log("do you want to use existing models ? y/n?");
     var useExisting =  readline.question();
     if(useExisting == 'y'|| useExisting=='Y'){
     fs
@@ -55,8 +55,14 @@ Object.keys(db).forEach(modelName => {
     console.log(Object.keys(db));
     let answer = readline.question();
     additionalString = `var modelToUse = "${answer}";`;
-
-    console.log(Object.keys(db[answer].rawAttributes),additionalString);
+    if(!Object.keys(db[answer].rawAttributes).includes("refresh_token")){
+        queryInterface.addColumn(answer, 'refresh_token', { type: Sequelize.STRING });
+        console.log("refresh_token  column added to ", answer,"model");
+    }
+    if(!Object.keys(db[answer].rawAttributes).includes("user_key")){
+        queryInterface.addColumn(answer, 'user_key', { type: Sequelize.STRING });
+        console.log("user_key column added to ",answer,"model");
+    }
 
 }else{
     console.log("using default model... User");
