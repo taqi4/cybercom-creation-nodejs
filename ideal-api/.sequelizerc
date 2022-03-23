@@ -1,3 +1,38 @@
+const path = require('path');
+const fs=require('fs');
+const reader = require("readline-sync");
+async function run(){
+    try{
+        let answer = reader.question("do you want to run sequlize on root? yes / no ?");
+            if(answer=="no"){
+                let obj={}
+                fs.readdirSync("./api").
+                forEach((e,i)=>{
+                    console.log(`${e}->${i}`)
+                    obj[i]=e
+                });
+                let answer = reader.question("in which module you want to store insert the number?")
+                module.exports={
+                    'config': path.resolve('config', './config/config.json'),
+                    'models-path': path.resolve(`./api/${obj[answer]}`, 'models'),
+                    'seeders-path': path.resolve(`./api/${obj[answer]}`, 'seeders'),
+                    'migrations-path': path.resolve(`./api/${obj[answer]}`, 'migrations')
+                }
+            }else{
+                module.exports={
+                    'config': path.resolve('config', './config/config.json'),
+                    'models-path': path.resolve(`./db/`, 'models'),
+                    'seeders-path': path.resolve(`./db/`, 'seeders'),
+                    'migrations-path': path.resolve(`./db/`, 'migrations')
+                }
+            }
+    }catch(err){
+        console.log("check your module number")
+    }
+}
+run()
+
+
 // const path = require('path');
 // const inquirer = require('inquirer');
 // const fs = require('fs');

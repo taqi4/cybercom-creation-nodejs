@@ -1,4 +1,3 @@
-module.exports.index = ()=>{
-    console.log("from home/index");
-    console.log(process.env.CHECK);
+module.exports.index =async (req,res)=>{
+    res.render('index',{ csrfToken: req.csrfToken() })
 }

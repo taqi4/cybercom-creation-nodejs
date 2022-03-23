@@ -1,14 +1,16 @@
 const express = require('express');
 var router  = new express.Router();
 var User = db.User;
+const {v4 : uuidv4} = require('uuid');
+var dayjs = require("dayjs");
 
 const refreshToken = async(req,res)=>{
     try{
-    var decoded = await jwt.verify(req.cookies["refresh-token"],process.env.REFRESH_TOKEN_KEY);
+    var decoded = await jwt.verify(req.cookies["refresh-token"],req.cookies["_csrf"]);
     if(decoded){
-        var userExist = decoded.userServices;
-        var accessToken = await jwt.sign({userExist},process.env.ACCESS_TOKEN_KEY,{expiresIn : 3600});
-        var refreshToken = await jwt.sign({userExist}, process.env.REFRESH_TOKEN_KEY,{expiresIn:86400}) 
+        var userExist = decoded;
+        var accessToken = await jwt.sign({userName:userExist.userName,role:userExist.role},req.cookies["_csrf"],{expiresIn : 3600});
+        var refreshToken = await jwt.sign({userName:userExist.userName,role:userExist.role}, req.cookies["_csrf"],{expiresIn:86400}) 
     res.cookie("refresh-token",refreshToken,{
         secure: process.env.NODE_ENV !== "development",
         httpOnly: true,
@@ -22,16 +24,13 @@ const refreshToken = async(req,res)=>{
         console.log(e.message);
     }
 }
-const loginService =async  (user)=>{
+const loginService =async  (user,req)=>{
     let userExist = await User.findOne({where :{userName : user.userName}});
     console.log(userExist);
     if(userExist.password==user.password){
-        var accessToken = await  jwt.sign({userExist},process.env.ACCESS_TOKEN_KEY,{  expiresIn: 3600 });
-        var refreshToken = await jwt.sign({userExist}, process.env.REFRESH_TOKEN_KEY,{expiresIn :86400});  
-        // let key = uuid.v4();
-        // userExist.user_key = key;
-        // userExist.refreshToken = refreshToken; 
-        // await User.update(userExist,{where:{id:userExist.id}});;
+        var accessToken = await  jwt.sign({userName:userExist.userName,role:userExist.role},req.cookies["_csrf"],{  expiresIn: 3600 });
+        var refreshToken = await jwt.sign({userName:userExist.userName,role:userExist.role}, req.cookies["_csrf"],{expiresIn :86400});  
+       
         return {accessToken,refreshToken};
     }
     else{
@@ -40,8 +39,8 @@ const loginService =async  (user)=>{
 }
 const login =async (req,res)=>{
 
-    var tokens  =await loginService(req.body);
-    if(token){
+    var tokens  =await loginService(req.body,req);
+    if(tokens){
         res.cookie("refresh-token",tokens.refreshToken,{
           secure: process.env.NODE_ENV !== "development",
           httpOnly: true,
@@ -55,6 +54,6 @@ const login =async (req,res)=>{
 }
 
 router.post("/login",login);
-router.post("/refresh-token",refreshToken);
+router.get("/refresh-token",refreshToken);
 
 module.exports = router;

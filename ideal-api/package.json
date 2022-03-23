@@ -3,8 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "nodemon ./bin/www",
-    "add-auth": " node bin/commands/addAuth"
+    "start": "nodemon ./bin/www"
   },
   "dependencies": {
     "body-parser": "^1.19.2",
@@ -14,6 +13,7 @@
     "csurf": "^1.11.0",
     "dayjs": "^1.10.8",
     "debug": "~2.6.9",
+    "dotenv": "^16.0.0",
     "ejs": "~2.6.1",
     "express": "~4.16.1",
     "http-errors": "~1.6.3",
@@ -34,5 +34,10 @@
   "devDependencies": {
     "nodemon": "^2.0.15",
     "sequelize-cli": "^6.4.1"
+  },
+  "bin":{
+    "frk":"./bin/commands/list.js",
+    "frk-addauth":"./bin/commands/add-auth.js",
+    "frk-addmodule":"./bin/commands/add-module.js"
   }
 }
