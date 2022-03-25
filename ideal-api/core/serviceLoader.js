@@ -14,21 +14,21 @@ var importFunction = (object,path)=>{
         }else{
             let [fileName , ext ] = file.split(".");
             if(ext=="js"){
-                let f = newPath.replace("/ideal-api","");
+                let f = "../"+newPath;
                 object[fileName] = require(f);
             }
         }
     })
 }
-fs.readdirSync("../ideal-api/api")
+fs.readdirSync("./api")
 .forEach(moduleName =>{
     functions[moduleName] = {};
     services[moduleName]={};
-    importFunction(functions[moduleName],`../ideal-api/api/${moduleName}/functions`);
-    importFunction(services[moduleName],`../ideal-api/api/${moduleName}/services`);
+    importFunction(functions[moduleName],`./api/${moduleName}/functions`);
+    importFunction(services[moduleName],`./api/${moduleName}/services`);
 });
-importFunction(functions,"../ideal-api/functions");
-importFunction(services,"../ideal-api/services");
-importFunction(core.middlewares,"../ideal-api/core/middlewares");
+importFunction(functions,"./functions");
+importFunction(services,"./services");
+importFunction(core.middlewares,"./core/middlewares");
 
 module.exports = {functions,services};

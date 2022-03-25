@@ -1,5 +1,4 @@
-var modelToUse = "User";
-const express = require('express');
+var modelToUse = "User";const express = require('express');
 var router = new express.Router();
 var User = db[modelToUse];
 const {
@@ -71,7 +70,7 @@ const loginService = async (user) => {
         },
         raw: true
     });
-    console.log(userExist);
+    
     if (userExist.password == user.password) {
         var accessToken = await jwt.sign({
             userName: userExist.userName,

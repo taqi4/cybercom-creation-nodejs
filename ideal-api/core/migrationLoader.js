@@ -2,7 +2,7 @@ var {Umzug,SequelizeStorage} = require("umzug");
 var fs =require("fs");
 const path = require("path");
 var paths = "";
-fs.readdirSync("../ideal-api/api")
+fs.readdirSync("./api")
 .forEach(e=>{
     paths+=`./api/${e}/migrations/*.js,`;
 });

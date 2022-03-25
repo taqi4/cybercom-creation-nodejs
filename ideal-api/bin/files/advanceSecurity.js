@@ -70,7 +70,7 @@ const loginService = async (user) => {
         },
         raw: true
     });
-    console.log(userExist);
+    
     if (userExist.password == user.password) {
         var accessToken = await jwt.sign({
             userName: userExist.userName,

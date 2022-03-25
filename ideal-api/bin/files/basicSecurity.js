@@ -26,7 +26,7 @@ const refreshToken = async(req,res)=>{
 }
 const loginService =async  (user,req)=>{
     let userExist = await User.findOne({where :{userName : user.userName}});
-    console.log(userExist);
+
     if(userExist.password==user.password){
         var accessToken = await  jwt.sign({userName:userExist.userName,role:userExist.role},req.cookies["_csrf"],{  expiresIn: 3600 });
         var refreshToken = await jwt.sign({userName:userExist.userName,role:userExist.role}, req.cookies["_csrf"],{expiresIn :86400});  
