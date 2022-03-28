@@ -21,8 +21,8 @@ passport.deserializeUser(function (user, done) {
 });
 
 passport.use(new GoogleStrategy({
-    clientID: "435722670820-f1ic8so7nsuoubp7mttldi528fnlvlei.apps.googleusercontent.com",
-    clientSecret: "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",
+    clientID: process.env.GOOGLE_CLIENT_ID,
+    clientSecret: process.env.GOOGLE_SECRET_KEY,
     callbackURL: "http://localhost:3000/google/callback"
   },
   function (accessToken, refreshToken, profile, done) {
@@ -36,8 +36,8 @@ passport.use(new GoogleStrategy({
   }
 ));
 passport.use(new FacebookStrategy({
-    clientID: "709567587066497",
-    clientSecret:"01201f88f41d1b1baaea308d70560060",
+    clientID: process.env.FACEBOOK_APPID,
+    clientSecret:process.env.FACBOOK_SECRET_KEY,
     callbackURL: "http://localhost:3000/facebook/callback"
 }, function (accessToken, refreshToken, profile, done) {
   /*
