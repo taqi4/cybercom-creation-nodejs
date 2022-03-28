@@ -104,7 +104,6 @@ const loginService = async (user) => {
     }
 }
 const login = async (req, res) => {
-
     var tokens = await loginService(req.body);
     if (tokens) {
         res.cookie("refresh-token", tokens.refreshToken, {

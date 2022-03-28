@@ -1,6 +1,7 @@
 var jwt = require("jsonwebtoken");
 var db = require("../db/models/index")
 var User = db.User;
+var {v4:uuidv4} = require("uuid");
 module.exports.register = async (user) => {
     console.log(user);
     let userExist = await User.findAll({
@@ -24,6 +25,23 @@ module.exports.register = async (user) => {
         return false
     });
     return true;
+}
+module.exports.loginSocial = async (user) => {
+    var email = user.emails[0].value;
+    let userExist = await User.findOne({where: {userName: email}});
+    if(!userExist){
+        await User.create({
+            userName: email,
+            role: "admin",
+            password: null
+        });
+        userExist = await User.findOne({where: {userName: email}});
+    }
+    var accessToken = await jwt.sign({userName:userExist.userName,role:userExist.role},process.env.ACCESS_TOKEN_KEY,{expiresIn:3600});
+    var refreshToken = await jwt.sign({userName:userExist.userName,role:userExist.role},process.env.REFRESH_TOKEN_KEY,{expiresIn:86400})
+    let key = uuidv4();
+    await User.update({refresh_token:refreshToken,user_key:key},{where:{id:userExist.id}});
+    return {accessToken,refreshToken,key};
 }
 
 // module.exports.login =async  (user)=>{

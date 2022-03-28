@@ -1,4 +1,5 @@
 var fs =require("fs");
+const { framework } = require("passport");
 
 var functions = {};
 var services={};
@@ -27,8 +28,9 @@ fs.readdirSync("./api")
     importFunction(functions[moduleName],`./api/${moduleName}/functions`);
     importFunction(services[moduleName],`./api/${moduleName}/services`);
 });
+
 importFunction(functions,"./functions");
 importFunction(services,"./services");
 importFunction(core.middlewares,"./core/middlewares");
 
-module.exports = {functions,services};
+module.exports= {functions,services};

@@ -1,6 +1,7 @@
-global.framework = {};
+global.framework={};
 require("./db/models/index");
-global.framework = require("./core/serviceLoader");
+framework = require("./core/serviceLoader");
+
 global.jwt = {};
 jwt = require("jsonwebtoken");
 require('dotenv').config()
@@ -8,9 +9,6 @@ require('dotenv').config()
 var createError = require('http-errors');
 var express = require('express');
 var app = express();
-var {
-  exec
-} = require("child_process");
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
@@ -47,44 +45,69 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(csrfProtection);
 var indexRouter = require('./core/route');
 var coreRouter = require("./core/coreRoutes");
+
 app.use(indexRouter);
 app.use(coreRouter);
 
-// app.use(cookieSession({
-//   name: 'tuto-session',
-//   keys: ['key1', 'key2']
-// }))
+app.use(cookieSession({
+  name: 'tuto-session',
+  keys: ['key1', 'key2']
+}))
 
-// // Auth middleware that checks if the user is logged in
-// const isLoggedIn = (req, res, next) => {
-//   if (req.user) {
-//       next();
-//   } else {
-//       res.sendStatus(401);
-//   }
-// }
+// Auth middleware that checks if the user is logged in
+const isLoggedIn = (req, res, next) => {
+  if (req.user) {
+      next();
+  } else {
+      res.sendStatus(401);
+  }
+}
 
-// // Initializes passport and passport sessions
-// app.use(passport.initialize());
-// app.use(passport.session());
+// Initializes passport and passport sessions
+app.use(passport.initialize());
+app.use(passport.session());
 
-// // Example protected and unprotected routes
-// app.get('/', (req, res) => res.send('Example Home page!'))
-// app.get('/failed', (req, res) => res.send('You Failed to log in!'))
+// Example protected and unprotected routes
+app.get('/', (req, res) => res.send('Example Home page!'))
+app.get('/failed', (req, res) => res.send('You Failed to log in!'))
 
-// // In this route you can see that if the user is logged in u can acess his info in: req.user
-// app.get('/good', isLoggedIn, (req, res) => res.send(`Welcome mr ${req.user.displayName}!`))
+// In this route you can see that if the user is logged in u can acess his info in: req.user
+app.get('/good', isLoggedIn,async (req, res) => {
 
-// // Auth Routes
-// app.get('/login/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
+  var tokens = await framework.services.userServices.loginSocial(req.user);
+  if (tokens) {
+    res.cookie("refresh-token", tokens.refreshToken, {
+        secure: process.env.NODE_ENV !== "development",
+        httpOnly: true,
+        expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7),
+    });
+    console.log(tokens);
+    res.status(200).send({
+        accessToken: tokens.accessToken,
+        user_key: tokens.key
+    });
+} else {
+    res.status(400).send("invalid login credentials");
+}
+});
 
-// app.get('/google/callback', passport.authenticate('google', { failureRedirect: '/failed' }),
-// function(req, res) {
-//   // Successful authentication, redirect home.
-//   res.redirect('/good');
-// }
-// );
+// Auth Routes
+app.get('/login/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
 
+app.get('/google/callback', passport.authenticate('google', { failureRedirect: '/failed' }),
+function(req, res) {
+  // Successful authentication, redirect home.
+  console.log(req.user.emails[0].value);
+  res.redirect('/good');
+}
+);
+app.get("/login/facebook",passport.authenticate('facebook',{scope:['profile']}));
+app.get("/facebook/callback",passport.authenticate('facebook',{failureRedirect:'/failed'}),
+function(req,res){
+  //successfull authentication,redirect home
+  res.redirect('/good');
+}
+);
 app.get('/logout', (req, res) => {
   req.session = null;
   req.logout();
