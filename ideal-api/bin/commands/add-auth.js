@@ -76,8 +76,25 @@ if (ans == 'y' || ans == 'Y') {
     console.log("using default model... User");
     additionalString = `var modelToUse = "User";`;
   }
-  file = additionalString + fs.readFileSync("./bin/files/advanceSecurity.js", "utf-8");
+
+  console.log("Do you want third party auth y/n?");
+  var thirdPartyAuth = readline.question();
+  if (thirdPartyAuth == 'y' || thirdPartyAuth == 'Y') {
+    file = additionalString + fs.readFileSync("./bin/files/advanceThirdPartAuth.js", "utf-8");
+    let pass = fs.readFileSync("./bin/files/passportSetup.js","utf-8");
+    fs.writeFileSync("./core/passport-setup.js",pass);
+  } else {
+    file = additionalString + fs.readFileSync("./bin/files/advanceSecurity.js", "utf-8");
+  }
 } else {
-  file = fs.readFileSync("./bin/files/basicSecurity.js", "utf-8");
+  console.log("Do you want third party auth y/n");
+  var thirdPartyAuth = readline.question();
+  if (thirdPartyAuth == 'y' || thirdPartyAuth == 'Y') {
+    file = fs.readFileSync("./bin/files/thirdPartAuth.js", "utf-8");
+    let pass = fs.readFileSync("./bin/files/passportSetup.js","utf-8");
+    fs.writeFileSync("./core/passport-setup.js",pass);
+  } else {
+    file = fs.readFileSync("./bin/files/basicSecurity.js", "utf-8");
+  }
 }
 fs.writeFileSync("./core/coreRoutes.js", file);

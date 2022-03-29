@@ -1,14 +1,26 @@
 const express = require('express');
 var router = new express.Router();
-var User = db.User;
+var User = db[modelToUse];
 const {
     v4: uuidv4
 } = require('uuid');
 var dayjs = require("dayjs");
 const passport = require('passport');
+
+
 const refreshToken = async (req, res) => {
     try {
-        var decoded = await jwt.verify(req.cookies["refresh-token"], req.cookies["_csrf"]);
+        let user_key = req.params.user_key;
+        console.log(user_key);
+        let valid_key = await User.findOne({
+            where: {
+                user_key: user_key,
+                refresh_token: req.cookies["refresh-token"]
+            }
+        });
+        console.log(valid_key);
+
+        var decoded = await jwt.verify(req.cookies["refresh-token"], process.env.REFRESH_TOKEN_KEY);
         if (decoded) {
             var userExist = decoded;
             var accessToken = await jwt.sign({
@@ -20,16 +32,27 @@ const refreshToken = async (req, res) => {
             var refreshToken = await jwt.sign({
                 userName: userExist.userName,
                 role: userExist.role
-            }, req.cookies["_csrf"], {
+            }, process.env.REFRESH_TOKEN_KEY, {
                 expiresIn: 86400
             })
+            let key = uuidv4();
+
+            await User.update({
+                refresh_token: refreshToken,
+                user_key: key
+            }, {
+                where: {
+                    id: valid_key.id
+                }
+            });
             res.cookie("refresh-token", refreshToken, {
                 secure: process.env.NODE_ENV !== "development",
                 httpOnly: true,
                 expires: dayjs().add(30, "days").toDate(),
             });
             res.status(200).send({
-                accessToken
+                accessToken,
+                user_key: key
             });
             return true;
         }
@@ -39,11 +62,13 @@ const refreshToken = async (req, res) => {
         console.log(e.message);
     }
 }
-const loginService = async (user, req) => {
+const loginService = async (user) => {
+
     let userExist = await User.findOne({
         where: {
             userName: user.userName
-        }
+        },
+        raw: true
     });
 
     if (userExist.password == user.password) {
@@ -56,13 +81,23 @@ const loginService = async (user, req) => {
         var refreshToken = await jwt.sign({
             userName: userExist.userName,
             role: userExist.role
-        }, req.cookies["_csrf"], {
+        }, process.env.REFRESH_TOKEN_KEY, {
             expiresIn: 86400
         });
+        let key = uuidv4();
 
+        await User.update({
+            refresh_token: refreshToken,
+            user_key: key
+        }, {
+            where: {
+                id: userExist.id
+            }
+        });;
         return {
             accessToken,
-            refreshToken
+            refreshToken,
+            key
         };
     } else {
         return false;
@@ -70,19 +105,22 @@ const loginService = async (user, req) => {
 }
 const login = async (req, res) => {
 
-    var tokens = await loginService(req.body, req);
+    var tokens = await loginService(req.body);
     if (tokens) {
         res.cookie("refresh-token", tokens.refreshToken, {
             secure: process.env.NODE_ENV !== "development",
             httpOnly: true,
             expires: dayjs().add(30, "days").toDate(),
         });
-        res.status(200).send(tokens.accessToken);
+        console.log(tokens);
+        res.status(200).send({
+            accessToken: tokens.accessToken,
+            user_key: tokens.key
+        });
     } else {
         res.status(400).send("invalid login credentials");
     }
 }
-
 // Auth middleware that checks if the user is logged in
 const isLoggedIn = (req, res, next) => {
     console.log(req.user);
@@ -95,24 +133,49 @@ const isLoggedIn = (req, res, next) => {
 
 const loginSocial = async (user) => {
     try {
-        var userName = user.emails[0].value;
-
+        var email = user.emails[0].value;
+        let userExist = await User.findOne({
+            where: {
+                userName: email
+            }
+        });
+        if (!userExist) {
+            await User.create({
+                userName: email,
+                role: "admin",
+                password: null
+            });
+            userExist = await User.findOne({
+                where: {
+                    userName: email
+                }
+            });
+        }
         var accessToken = await jwt.sign({
-            userName: userName,
-            role: "admin"
+            userName: userExist.userName,
+            role: userExist.role
         }, process.env.ACCESS_TOKEN_KEY, {
             expiresIn: 3600
         });
         var refreshToken = await jwt.sign({
-            userName: userName,
-            role: "admin"
-        }, req.cookies["_csrf"], {
+            userName: userExist.userName,
+            role: userExist.role
+        }, process.env.REFRESH_TOKEN_KEY, {
             expiresIn: 86400
         })
-
+        let key = uuidv4();
+        await User.update({
+            refresh_token: refreshToken,
+            user_key: key
+        }, {
+            where: {
+                id: userExist.id
+            }
+        });
         return {
             accessToken,
-            refreshToken
+            refreshToken,
+            key
         };
     } catch (e) {
         console.log(e.message);
@@ -135,6 +198,7 @@ router.get('/good', isLoggedIn, async (req, res) => {
             console.log(tokens);
             res.status(200).send({
                 accessToken: tokens.accessToken,
+                user_key: tokens.key
             });
         } else {
             res.status(400).send("invalid login credentials");
@@ -178,6 +242,6 @@ router.get('/logout', (req, res) => {
 
 
 router.post("/login", login);
-router.get("/refresh-token", refreshToken);
+router.get("/refresh-token/:user_key", refreshToken);
 
 module.exports = router;

@@ -31,13 +31,12 @@ passport.use(new GoogleStrategy({
      If yes select the user and pass him to the done callback
      If not create the user and then select him and pass to callback
     */
-    console.log(profile);
     return done(null, profile);
   }
 ));
 passport.use(new FacebookStrategy({
     clientID: process.env.FACEBOOK_APPID,
-    clientSecret:process.env.FACBOOK_SECRET_KEY,
+    clientSecret:"c1c61bebbae349d02de53030444d0173",
     callbackURL: "http://localhost:3000/facebook/callback"
 }, function (accessToken, refreshToken, profile, done) {
   /*
@@ -45,7 +44,7 @@ passport.use(new FacebookStrategy({
    If yes select the user and pass him to the done callback
    If not create the user and then select him and pass to callback
   */
-  console.log(profile);
+  
   return done(null, profile);
 }
 ));
