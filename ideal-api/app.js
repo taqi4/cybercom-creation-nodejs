@@ -26,10 +26,9 @@ require('./core/passport-setup');
 global.readline = require('readline').createInterface({
   input: process.stdin,
   output: process.stdout
-})
+});
 require("./core/migrationLoader");
 
-console.log(colors.red(process.env.CHECK));
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
@@ -54,11 +53,16 @@ app.use(passport.session());
 
 var indexRouter = require('./core/route');
 var coreRouter = require("./core/coreRoutes");
-
+var upload = require("./core/middlewares/fileMiddleware");
 app.use(indexRouter);
 app.use(coreRouter);
-
-
+app.use(upload)
+app.post('/profile' , function (req, res, next) {
+  // req.file is the `avatar` file
+  // req.body will hold the text fields, if there were any
+  console.log(req.files["avatar"][0]);
+  res.status(200).send('ok');
+});
 
 
 // Example protected and unprotected routes

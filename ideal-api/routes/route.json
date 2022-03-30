@@ -20,6 +20,13 @@
         "controller":"user.register",
         "middlewares":[],
         "roles":[]
+    },
+    {
+        "method":"get",
+        "path":"/profile",
+        "controller":"user.profile",
+        "middlewares":[],
+        "roles":[]
     }
     
 ]

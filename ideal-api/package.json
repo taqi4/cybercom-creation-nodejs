@@ -20,6 +20,7 @@
     "inquirer": "^8.2.1",
     "jsonwebtoken": "^8.5.1",
     "morgan": "~1.9.1",
+    "multer": "^1.4.4",
     "mysql2": "^2.3.3",
     "node-cmd": "^5.0.0",
     "passport": "^0.5.2",
@@ -40,6 +41,8 @@
   "bin": {
     "frk": "./bin/commands/list.js",
     "frk-addauth": "./bin/commands/add-auth.js",
-    "frk-addmodule": "./bin/commands/add-module.js"
+    "frk-addmodule": "./bin/commands/add-module.js",
+    "frk-addfilefield": "./bin/commands/add-file-field.js",
+    "frk-rmfilefield": "./bin/commands/rm-file-field.js"
   }
 }

@@ -31,6 +31,11 @@ module.exports.registerForm = async (req, res) => {
         csrfToken: req.csrfToken()
     })
 }
+module.exports.profile = async(req,res)=>{
+    res.render("profile",{
+        csrfToken:req.csrfToken()
+    })
+}
 // module.exports.refreshToken = async(req,res)=>{
 //     try{let user_key = req.params.user_key;
 //     let valid_key = await User.findAll({where:{user_key : user_key,refresh_token:req.cookies["refresh-token"]}});
