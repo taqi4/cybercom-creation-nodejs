@@ -23,8 +23,9 @@ fs.readdirSync("./api")
                     //importFile(middlewareFile,middlewareFunction ,`api/${moduler}/middlewares`,moduler);
                     return require(`../api/${moduler}/middlewares/${middlewareFile}`)[middlewareFunction];
                 });
-                let path = subRoutes.global ? `${subRoute.path}` : `/${moduler}+${subRoute.path}`;
+                let path = subRoute.global ? `${subRoute.path}` : `/${moduler}${subRoute.path}`;
                 duplicate(path, subRoute.method);
+                subRoute.roles = subRoute.roles ?? [];
                 router[subRoute.method]
                     (path,
                         [core.middlewares.middlewares1.authenticate(subRoute.roles), ...middlewares],

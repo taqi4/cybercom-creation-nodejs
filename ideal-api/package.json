@@ -43,6 +43,7 @@
     "frk-addauth": "./bin/commands/add-auth.js",
     "frk-addmodule": "./bin/commands/add-module.js",
     "frk-addfilefield": "./bin/commands/add-file-field.js",
-    "frk-rmfilefield": "./bin/commands/rm-file-field.js"
+    "frk-rmfilefield": "./bin/commands/rm-file-field.js",
+    "frk-addmulter": "./bin/commands/add-multer.js"
   }
 }

@@ -6,7 +6,8 @@
         "middlewares": [
             "auth1.validate1"
         ],
-        "gloabal":false
+        "gloabal":false,
+        "roles":[]
     },
     {
         "method": "get",
@@ -15,6 +16,16 @@
         "middlewares": [
             "auth1.validate1"
         ],
-        "global":true
-    }  
+        "global":true,
+        "roles":[]
+    },{
+        "method":"post",
+        "path":"/profile",
+        "controller":"module1Home.profile",
+        "middlewares":[
+            "addfile2.nn"
+        ],
+        "global":true,
+        "roles":[]
+    }
 ]

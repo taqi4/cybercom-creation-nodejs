@@ -26,23 +26,23 @@ module.exports.register = async (user) => {
     });
     return true;
 }
-module.exports.loginSocial = async (user) => {
-    var email = user.emails[0].value;
-    let userExist = await User.findOne({where: {userName: email}});
-    if(!userExist){
-        await User.create({
-            userName: email,
-            role: "admin",
-            password: null
-        });
-        userExist = await User.findOne({where: {userName: email}});
-    }
-    var accessToken = await jwt.sign({userName:userExist.userName,role:userExist.role},process.env.ACCESS_TOKEN_KEY,{expiresIn:3600});
-    var refreshToken = await jwt.sign({userName:userExist.userName,role:userExist.role},process.env.REFRESH_TOKEN_KEY,{expiresIn:86400})
-    let key = uuidv4();
-    await User.update({refresh_token:refreshToken,user_key:key},{where:{id:userExist.id}});
-    return {accessToken,refreshToken,key};
-}
+// module.exports.loginSocial = async (user) => {
+//     var email = user.emails[0].value;
+//     let userExist = await User.findOne({where: {userName: email}});
+//     if(!userExist){
+//         await User.create({
+//             userName: email,
+//             role: "admin",
+//             password: null
+//         });
+//         userExist = await User.findOne({where: {userName: email}});
+//     }
+//     var accessToken = await jwt.sign({userName:userExist.userName,role:userExist.role},process.env.ACCESS_TOKEN_KEY,{expiresIn:3600});
+//     var refreshToken = await jwt.sign({userName:userExist.userName,role:userExist.role},process.env.REFRESH_TOKEN_KEY,{expiresIn:86400})
+//     let key = uuidv4();
+//     await User.update({refresh_token:refreshToken,user_key:key},{where:{id:userExist.id}});
+//     return {accessToken,refreshToken,key};
+// }
 
 // module.exports.login =async  (user)=>{
 //     let userExist = await User.findOne({where :{userName : user.userName}});

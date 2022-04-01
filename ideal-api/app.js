@@ -1,10 +1,10 @@
-global.framework={};
+global.framework = {};
 require("./db/models/index");
 framework = require("./core/serviceLoader");
 
 global.jwt = {};
 jwt = require("jsonwebtoken");
-require('dotenv').config()
+require('dotenv').config();
 
 var createError = require('http-errors');
 var express = require('express');
@@ -50,19 +50,27 @@ app.use(cookieSession({
 app.use(passport.initialize());
 app.use(passport.session());
 
-
+var {
+  multerWares,
+  upload
+} = require("./core/middlewares/fileMiddleware");
+framework.multerWares = multerWares;
 var indexRouter = require('./core/route');
 var coreRouter = require("./core/coreRoutes");
-var upload = require("./core/middlewares/fileMiddleware");
+
 app.use(indexRouter);
 app.use(coreRouter);
-app.use(upload)
-app.post('/profile' , function (req, res, next) {
-  // req.file is the `avatar` file
-  // req.body will hold the text fields, if there were any
-  console.log(req.files["avatar"][0]);
-  res.status(200).send('ok');
+// app.use(upload);
+// console.log(multerWares["docs"]);
+Object.keys(multerWares).forEach(key => {
+  app.use(multerWares[key])
 });
+// app.post('/profile',framework.multerWares.nn, function (req, res, next) {
+//   // req.file is the `avatar` file
+//   // req.body will hold the text fields, if there were any
+//   console.log(Object.keys(req.files));
+//   res.status(200).send('ok');
+// });
 
 
 // Example protected and unprotected routes
