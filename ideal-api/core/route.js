@@ -23,6 +23,13 @@ fs.readdirSync("./api")
                     //importFile(middlewareFile,middlewareFunction ,`api/${moduler}/middlewares`,moduler);
                     return require(`../api/${moduler}/middlewares/${middlewareFile}`)[middlewareFunction];
                 });
+                if(subRoute.multer){
+
+                    if(!Object.keys(framework.multerWares).includes(subRoute.multer.split(".")[2])){
+                        throw Error(`${subRoute.multer} is not a valid multer ware`);
+                    }
+                    middlewares.push(framework.multerWares[subRoute.multer.split(".")[2]]);
+                }
                 let path = subRoute.global ? `${subRoute.path}` : `/${moduler}${subRoute.path}`;
                 duplicate(path, subRoute.method);
                 subRoute.roles = subRoute.roles ?? [];
@@ -52,6 +59,13 @@ routes.forEach(route => {
             importFile(middlewareFile, middlewareFunction, "middlewares", " ");
             return importedFiles[middlewareFile][middlewareFunction];
         });
+        if(route.multer){
+
+            if(!Object.keys(framework.multerWares).includes(route.multer.split(".")[2])){
+                throw Error(`${route.multer} is not a valid multer ware`);
+            }
+            middlewares.push(framework.multerWares[route.multer.split(".")[2]]);
+        }
         duplicate(route.path, route.method);
         router[route.method]
             (route.path,
